@@ -9,6 +9,7 @@ export default class Pacman extends Entity {
   mouthDirection: number; // 1: opening, -1: closing
   isPowered: boolean;
   powerModeTimer: NodeJS.Timeout | null;
+  powerModeEndTime: number | null;
   
   constructor(x: number, y: number, size: number) {
     super(x, y, 5, size); // Pacman has a default speed of 5
@@ -17,6 +18,7 @@ export default class Pacman extends Entity {
     this.mouthDirection = 1;
     this.isPowered = false;
     this.powerModeTimer = null;
+    this.powerModeEndTime = null;
   }
 
   /**
@@ -39,6 +41,7 @@ export default class Pacman extends Entity {
    */
   activatePowerMode(duration: number, onPowerModeEnd: () => void): void {
     this.isPowered = true;
+    this.powerModeEndTime = Date.now() + duration;
     
     // Clear existing timer if there is one
     if (this.powerModeTimer) {
@@ -48,6 +51,7 @@ export default class Pacman extends Entity {
     // Set new timer
     this.powerModeTimer = setTimeout(() => {
       this.isPowered = false;
+      this.powerModeEndTime = null;
       onPowerModeEnd();
       this.powerModeTimer = null;
     }, duration);
@@ -61,6 +65,7 @@ export default class Pacman extends Entity {
     this.y = y;
     this.direction = 0;
     this.isPowered = false;
+    this.powerModeEndTime = null;
     
     if (this.powerModeTimer) {
       clearTimeout(this.powerModeTimer);
@@ -75,6 +80,7 @@ export default class Pacman extends Entity {
     if (this.powerModeTimer) {
       clearTimeout(this.powerModeTimer);
       this.powerModeTimer = null;
+      this.powerModeEndTime = null;
     }
   }
 }

@@ -549,11 +549,11 @@ export default class GameEngine {
 
       // Flashing blue when scared and about to recover
       if (ghost.scared && this.pacman.isPowered) {
-        const timeLeft = this.pacman.powerModeTimer ?
-          POWER_MODE_DURATION - (Date.now() - (this.pacman.powerModeTimer as any)._idleStart) : 0;
+        const timeLeft = this.pacman.powerModeEndTime ? this.pacman.powerModeEndTime - Date.now() : 0;
 
-        if (timeLeft < 3000 && Math.floor(Date.now() / 250) % 2 === 0) {
-          this.ctx.fillStyle = '#FFFFFF'; // Flash white
+        // Flash when less than 3 seconds remain and on every 250ms interval
+        if (timeLeft > 0 && timeLeft < 3000 && Math.floor(Date.now() / 250) % 2 === 0) {
+          this.ctx.fillStyle = '#FFFFFF'; // Flash white when about to end
         } else {
           this.ctx.fillStyle = '#0000FF'; // Blue when scared
         }
